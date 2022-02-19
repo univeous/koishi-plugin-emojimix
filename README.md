@@ -1,6 +1,6 @@
 # koishi-plugin-emojimix
 
-Koishi emojimix插件。提供0~2个emoji，生成对应的emojimix。
+适用于[Koishi-v4](https://github.com/koishijs/koishi)的emojimix插件。提供0~2个emoji，生成对应的emojimix。
 
 
 ## 使用说明
