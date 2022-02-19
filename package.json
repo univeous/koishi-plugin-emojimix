@@ -1,6 +1,6 @@
 {
   "name": "koishi-plugin-emojimix",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Emojimix Plugin for Koishi",
   "main": "index.js",
   "author": "Univeous <univeous@gmail.com>",

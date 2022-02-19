@@ -262,7 +262,7 @@ module.exports = (ctx) => {
 
           const u1 = emoji1[0].map((c) => "u" + c.toString(16)).join("-");
           const u2 = emoji2[0].map((c) => "u" + c.toString(16)).join("-");
-          url = `${API}${emoji1[1]}/${u1}/${u1}_${u2}.png`; //`https://tikolu.net/emojimix/${codePointsToEmoji(emoji1[0])}+${codePointsToEmoji(emoji2[0])}`;
+          url = `${API}${emoji1[1]}/${u1}/${u1}_${u2}.png`;
           console.log(url);
           response = await ctx.http.get(url);
           success = true;
