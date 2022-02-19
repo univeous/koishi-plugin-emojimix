@@ -3,12 +3,21 @@
   "version": "1.0.0",
   "description": "Emojimix Plugin for Koishi",
   "main": "index.js",
+  "author": "Univeous <univeous@gmail.com>",
   "license": "MIT",
   "keywords": [
     "chatbot",
     "koishi",
     "plugin"
   ],
+  "homepage": "https://github.com/univeous/koishi-plugin-emojimix",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/univeous/koishi-plugin-emojimix.git"
+  },
+  "bugs": {
+    "url": "https://github.com/univeous/koishi-plugin-emojimix/issues"
+  },
   "peerDependencies": {
     "koishi": "^4.0.0"
   }
