@@ -4,7 +4,9 @@ Koishi emojimix插件。提供0~2个emoji，生成对应的emojimix。
 
 ## 使用说明
 
-`emojimix [emoji1] [emoji2]`
+```
+emojimix [emoji1] [emoji2]
+```
 
 emoji1 和 emoji2 均为可选参数。
 将会生成两个emoji的混合图片，未提供的emoji将会随机选取。
