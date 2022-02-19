@@ -1,0 +1,15 @@
+{
+  "name": "koishi-plugin-emojimix",
+  "version": "1.0.0",
+  "description": "Emojimix Plugin for Koishi",
+  "main": "index.js",
+  "license": "MIT",
+  "keywords": [
+    "chatbot",
+    "koishi",
+    "plugin"
+  ],
+  "peerDependencies": {
+    "koishi": "^4.0.0"
+  }
+}
