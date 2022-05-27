@@ -1,10 +1,16 @@
 {
   "name": "koishi-plugin-emojimix",
-  "version": "1.0.2",
   "description": "Emojimix Plugin for Koishi",
-  "main": "index.js",
-  "author": "Univeous <univeous@gmail.com>",
+  "version": "1.1.0",
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "files": [
+    "lib",
+    "dist"
+  ],
   "license": "MIT",
+  "author": "Univeous <univeous@gmail.com>",
+  "scripts": {},
   "keywords": [
     "chatbot",
     "koishi",
