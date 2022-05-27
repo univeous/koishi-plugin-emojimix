@@ -1,4 +1,4 @@
-import { Context, Time, segment } from 'koishi'
+import { Context, Time, segment, Schema } from 'koishi'
 
 export const name = 'emojimix'
 
@@ -227,12 +227,20 @@ const emojis = [
   [[9729, 65039], "20201001", ["cloud", "sky", "air", "weather", "rain", "fluff"]]
 ];
 
-const API = "https://www.gstatic.com/android/keyboard/emojikitchen/"
+//const API = "https://www.gstatic.com/android/keyboard/emojikitchen/"
 
 const codePointsToEmoji = (codepoints: number[]) =>
   codepoints.reduce((p, c) => p + String.fromCodePoint(c), "");
 
-export function apply(ctx: Context) {
+export interface Config {
+  emojiEndpoint?: string;
+}
+
+export const Config: Schema<Config> = Schema.object({
+  emojiEndpoint: Schema.string().default('https://www.gstatic.com/android/keyboard/emojikitchen/'),
+})
+
+export function apply(ctx: Context, config: Config) {
   ctx.command("emojimix [emoji1] [emoji2]", "输出两个emoji的混合图片").action(async (message, e1, e2) => {
     if (e1 && !/\p{Emoji}/u.test(e1)) return `${e1}不是emoji`
     if (e2 && !/\p{Emoji}/u.test(e2)) return `${e2}不是emoji`
@@ -286,7 +294,7 @@ export function apply(ctx: Context) {
         const emoji2Code = emoji2[0] as number[]
         const url2 = emoji2Code.map(c => "u" + c.toString(16)).join("-")
 
-        url = `${API}${emoji1[1]}/${url1}/${url1}_${url2}.png`
+        url = `${config.emojiEndpoint}${emoji1[1]}/${url1}/${url1}_${url2}.png`
         const response = await ctx.http.get(url)
         success = true
       } catch (error) {
