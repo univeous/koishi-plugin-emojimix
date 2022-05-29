@@ -247,12 +247,13 @@ export function apply(ctx: Context, config: Config) {
 
     let success = false
 
-    let emoji1: (string | number[] | string[])[], emoji2: (string | number[] | string[])[], url: string
+    let emoji1: (string | number[] | string[])[], emoji2: (string | number[] | string[])[]
+    let url: string
     let firstTry = true
     
     while (!success) {
       try {
-        if (emoji1 == undefined) {
+        if (emoji1 === undefined) {
           if (e1) {
             const codePoint = e1.codePointAt(0)
             for (const element of emojis) {
@@ -266,8 +267,8 @@ export function apply(ctx: Context, config: Config) {
             emoji1 = emojis[Math.floor(Math.random() * emojis.length)]
           }
         }
-        if (emoji2 == undefined) {
-          if (e2 || e1.length > 2) {
+        if (emoji2 === undefined) {
+          if (e2 || (e1 && e1.length > 2)) {
             const codePoint = e2 ? e2.codePointAt(0) : e1.codePointAt(2)
             if(!e2) e2 = codePointsToEmoji([codePoint])
             for (const element of emojis) {
@@ -282,10 +283,10 @@ export function apply(ctx: Context, config: Config) {
             emoji2 = emojis[Math.floor(Math.random() * emojis.length)]
           }
         }
-        if (!emoji1) {
+        if (emoji1 === undefined) {
           return `${e1}无效。`
         }
-        if (!emoji2) {
+        if (emoji2 === undefined) {
           return `${e2}无效。`
         }
 
