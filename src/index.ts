@@ -234,10 +234,12 @@ const codePointsToEmoji = (codepoints: number[]) =>
 
 export interface Config {
   emojiEndpoint?: string;
+  maxTry?: number;
 }
 
 export const Config: Schema<Config> = Schema.object({
   emojiEndpoint: Schema.string().default('https://www.gstatic.com/android/keyboard/emojikitchen/'),
+  maxTry: Schema.number().description('随机匹配的最大尝试次数').default(10)
 })
 
 export function apply(ctx: Context, config: Config) {
@@ -249,7 +251,7 @@ export function apply(ctx: Context, config: Config) {
 
     let emoji1: (string | number[] | string[])[], emoji2: (string | number[] | string[])[]
     let url: string
-    let firstTry = true
+    let tryCount = 0
     
     while (!success) {
       try {
@@ -299,9 +301,14 @@ export function apply(ctx: Context, config: Config) {
         const response = await ctx.http.get(url)
         success = true
       } catch (error) {
-        if (firstTry) {
+        tryCount += 1
+
+        if (tryCount >= config.maxTry) {
+          return `达到最大尝试次数。`
+        }
+
+        if (tryCount === 1) {
           [emoji1, emoji2] = [emoji2, emoji1]
-          firstTry = false
           continue
         }
 
