@@ -31,7 +31,7 @@ jobs:
 
 
       - name: Commit files
-        if: ${{ env.new_version == 'true' }}
+        if: ${{ env.new_data == 'true' }}
         run: |
           git add data.json
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -39,7 +39,7 @@ jobs:
           git commit -m "Update mix data"
 
       - name: Push changes
-        if: ${{ env.new_version == 'true' }}
+        if: ${{ env.new_data == 'true' }}
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
