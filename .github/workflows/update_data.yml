@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  Update data:
+  Update-Data:
     runs-on: ubuntu-latest
 
     steps:
