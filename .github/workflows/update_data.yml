@@ -19,7 +19,7 @@ jobs:
         id: fetch-data
         run: |
           node ./fetch_data.js > data.json
-          echo "::set-output name=file-size::$(stat -c%s data.json)"
+          echo "file_size=$(stat -c%s data.json)" >> $GITHUB_ENV
           if git status --porcelain | grep -q "data.json";  then
             echo "new_data=true" >> $GITHUB_ENV
           else
@@ -27,7 +27,7 @@ jobs:
           fi
 
       - name: Cancel if no change
-        if: ${{ env.new_data == 'false' || steps.fetch-data.outputs.file-size < 10240 }}
+        if: ${{ env.new_data == 'false' || env.file_size < 10240 }}
         uses: andymckay/cancel-action@0.2
 
 
