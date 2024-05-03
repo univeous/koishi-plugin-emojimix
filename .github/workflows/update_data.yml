@@ -19,7 +19,7 @@ jobs:
         run: |
           node ./fetch_data.js > data.json
           
-          if git status --porcelain | grep -q "data.json"; then
+          if [[ git status --porcelain | grep -q "data.json"; ]] then
             echo "new_data=true" >> $GITHUB_ENV
           else
             echo "new_data=false" >> $GITHUB_ENV
