@@ -1,19 +1,6 @@
 import { Context, Time, segment, Schema } from 'koishi'
 
 export const name = 'emojimix'
-
-const codePointsToEmoji = (codepoint: string) => {
-  var data = codepoint.replace(/u/g, '').split('-')
-  console.log(data)
-  if (data.length == 1) {
-    return String.fromCodePoint(parseInt(data[0], 16))
-  } else if (data.length == 2) {
-    return String.fromCodePoint(parseInt(data[0], 16), parseInt(data[1], 16))
-  } else if (data.length == 3) {
-    return String.fromCodePoint(parseInt(data[0], 16), parseInt(data[1], 16), parseInt(data[2], 16))
-  }
-}
-
 export interface Config {
   emojiEndpoint?: string;
   mixDataEndpoint?: string;
@@ -25,15 +12,15 @@ export const Config: Schema<Config> = Schema.object({
 })
 
 function getCodePoint(emoji: string) {
-  var result = `u${emoji.codePointAt(0).toString(16)}`
-  var idx = 2
-  if(emoji.codePointAt(2)) {
-    result += `-u${emoji.codePointAt(2).toString(16)}`
-  }
-  if(emoji.codePointAt(4)) {
-    result += `-u${emoji.codePointAt(3).toString(16)}`
-  }
-  return result
+  return Array.from(emoji)
+    .map(char => char.codePointAt(0).toString(16))
+    .map(hex => 'u' + hex)
+    .join('-')
+}
+
+const codePointsToEmoji = (codepoint: string) => {
+  const components = codepoint.replace(/u/g, '').split('-')
+  return components.map(code => String.fromCodePoint(parseInt(code, 16))).join('')
 }
 
 export async function apply(ctx: Context, config: Config) {
@@ -57,10 +44,6 @@ export async function apply(ctx: Context, config: Config) {
         else
           codePoint1 = Object.keys(emojis)[Math.floor(Math.random() * Object.keys(emojis).length)]
         emoji1 = emojis[codePoint1]
-        if(!emoji1){
-          codePoint1 = codePoint1 + '-ufe0f'
-          emoji1 = emojis[codePoint1]
-        }
         emoji1 = emoji1.reduce((acc, cur) => {
           let key = Object.keys(cur)[0]
           acc[key] = cur[key]
@@ -71,17 +54,11 @@ export async function apply(ctx: Context, config: Config) {
         else
           codePoint2 = Object.keys(emoji1)[Math.floor(Math.random() * Object.keys(emoji1).length)]
         date = emoji1[codePoint2]
-        if(!date){
-          codePoint2 = codePoint2 + '-ufe0f'
-          date = emoji1[codePoint2]
-        }
 
         url = `${config.emojiEndpoint}${date}/${codePoint1}/${codePoint1}_${codePoint2}.png`
-        console.log(url)
         await ctx.http.get(url)
         break
       } catch (error) {
-        console.log(error)
         if (e1 && e2) {
           if (first_try) {
             [e1, e2] = [e2, e1]
