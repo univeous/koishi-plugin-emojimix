@@ -1,0 +1,46 @@
+name: Process
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+jobs:
+  Update data:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Ftech data
+        run: |
+          node ./fetch_data.js > data.json
+          
+          if git status --porcelain | grep -q "data.json"; then
+            echo "new_data=true" >> $GITHUB_ENV
+          else
+            echo "new_data=false" >> $GITHUB_ENV
+          fi
+
+      - name: Cancel if no change
+        if: ${{ env.new_data == 'false' }}
+        uses: andymckay/cancel-action@0.2
+
+
+      - name: Commit files
+        if: ${{ env.new_version == 'true' }}
+        run: |
+          git add data.json
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git commit -m "Update mix data"
+
+      - name: Push changes
+        if: ${{ env.new_version == 'true' }}
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
