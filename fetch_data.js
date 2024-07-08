@@ -1,7 +1,7 @@
 fetch('https://emojikitchen.dev/')
   .then(response => response.text())
   .then(data => {
-    let jsPathRegEx = /\/assets\/index-[A-Za-z0-9]*\.js/g;
+    let jsPathRegEx = /\/assets\/index-[A-Za-z0-9_]*\.js/g;
     let jsPathMatch = data.match(jsPathRegEx);
     let jsPath = jsPathMatch[0];
 
