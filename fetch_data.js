@@ -1,27 +1,25 @@
-fetch('https://emojikitchen.dev/')
-  .then(response => response.text())
-  .then(data => {
-    let jsPathRegEx = /\/assets\/index-[A-Za-z0-9_]*\.js/g;
-    let jsPathMatch = data.match(jsPathRegEx);
-    let jsPath = jsPathMatch[0];
+const { writeFile } = require('fs/promises')
 
-    fetch(`https://emojikitchen.dev/${jsPath}`)
-      .then(response => response.text())
-      .then(data => {
-        let urlsRegEx = /https:\/\/www\.gstatic\.com\/android\/keyboard\/emojikitchen[^"]*/g;
-        let urlsMatch = data.match(urlsRegEx);
-        urls = [...new Set(urlsMatch)];
-        var data = {}
-        for(url of urls) {
-            components = url.split("/")
-            date = components[components.length - 3]
-            emoji = components[components.length - 2]
-            emoji2 = components[components.length - 1].split(".")[0].split("_")[1]
-            if(!(emoji in data)) {
-                data[emoji] = []
-            }
-            data[emoji].push({[emoji2]: date})
-        }
-        console.log(JSON.stringify([data]))
-      });
-  });
+async function scrapData() {
+  const resp1 = await fetch('https://emojikitchen.dev/')
+    .then(response => response.text())
+  const jsPathRegEx = /\/assets\/index-[A-Za-z0-9_]*\.js/g
+  const jsPathMatch = resp1.match(jsPathRegEx)
+  const jsPath = jsPathMatch[0]
+  const resp2 = await fetch(`https://emojikitchen.dev/${jsPath}`)
+    .then(response => response.text())
+  const urlsRegEx = /https:\/\/www\.gstatic\.com\/android\/keyboard\/emojikitchen[^"]*/g
+  const urlsMatch = resp2.match(urlsRegEx)
+  const urls = [...new Set(urlsMatch)]
+  const data = urls.map(url => {
+    const match = url.match(/(\d{8})\/u[^"]+\/(u[^"]+)_(u[^"]+(?:-u[^"]+)?)\.png/)
+    return match.slice(1)
+  }).reduce((acc, [date, emoji, emoji2]) => {
+    if (!acc[emoji]) acc[emoji] = {}
+    acc[emoji][emoji2] = date
+    return acc
+  }, {})
+  return data
+}
+
+scrapData().then(data => writeFile('data.json', JSON.stringify(data), 'utf-8'))

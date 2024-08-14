@@ -25,6 +25,10 @@ const codePointsToEmoji = (codepoint: string) => {
   return components.map(code => String.fromCodePoint(parseInt(code, 16))).join('')
 }
 
+interface Data {
+  [emoji1: string]: { [emoji2: string]: string }
+}
+
 export async function apply(context: Context, config: Config) {
   const ctx = context.isolate('http')
   ctx.http = context.http.extend(config.quester)
@@ -34,7 +38,7 @@ export async function apply(context: Context, config: Config) {
     if (e1 && !/\p{Emoji}/u.test(e1)) return `${e1}不是emoji`
     if (e2 && !/\p{Emoji}/u.test(e2)) return `${e2}不是emoji`
 
-    let emoji1
+    let emoji1: Data[string]
     let codePoint1: string
     let codePoint2: string
     let date: string
@@ -48,11 +52,6 @@ export async function apply(context: Context, config: Config) {
         else
           codePoint1 = Object.keys(emojis)[Math.floor(Math.random() * Object.keys(emojis).length)]
         emoji1 = emojis[codePoint1]
-        emoji1 = emoji1.reduce((acc, cur) => {
-          let key = Object.keys(cur)[0]
-          acc[key] = cur[key]
-          return acc
-        })
         if (e2)
           codePoint2 = getCodePoint(e2)
         else
