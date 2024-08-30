@@ -6,7 +6,8 @@
   "typings": "lib/index.d.ts",
   "files": [
     "lib",
-    "dist"
+    "dist",
+    "data.json"
   ],
   "license": "MIT",
   "author": "Univeous <univeous@gmail.com>",
