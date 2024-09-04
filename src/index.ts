@@ -1,17 +1,16 @@
 import { Context, Time, segment, Schema, Quester } from 'koishi'
 import { readFile, writeFile } from 'fs/promises'
+import { join } from 'path'
 
 export const name = 'emojimix'
 export interface Config {
   emojiEndpoint?: string;
   mixDataEndpoint?: string;
-  quester: Quester.Config;
 }
 
 export const Config: Schema<Config> = Schema.object({
   emojiEndpoint: Schema.string().default('https://www.gstatic.com/android/keyboard/emojikitchen/'),
   mixDataEndpoint: Schema.string().default('https://github.com/univeous/koishi-plugin-emojimix/raw/master/data.json').description('emoji 混合数据的 endpoint 。'),
-  quester: Quester.Config,
 })
 
 function getCodePoint(emoji: string) {
@@ -30,14 +29,15 @@ interface Data {
   [emoji1: string]: { [emoji2: string]: string }
 }
 
-export async function apply(context: Context, config: Config) {
-  const ctx = context.isolate('http')
-  ctx.http = context.http.extend(config.quester)
-
-  let emojis: Data = await readFile('../data.json', 'utf-8').then(data => JSON.parse(data))
+export async function apply(ctx: Context, config: Config) {
+  const logger = ctx.logger('emojimix')
+  const path = join(__dirname, '..', 'data.json')
+  let emojis: Data = await readFile(path, 'utf-8').then(data => JSON.parse(data))
   ctx.http.get(config.mixDataEndpoint).then(data => {
-    writeFile('../data.json', data, 'utf-8')
+    writeFile(path, data, 'utf-8')
     emojis = JSON.parse(data)
+  }).catch((e) => {
+    logger.warn(e)
   })
 
   ctx.command("emojimix [emoji1] [emoji2]", "输出两个emoji的混合图片").action(async (_, e1, e2) => {
